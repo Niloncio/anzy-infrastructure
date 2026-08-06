@@ -28,20 +28,19 @@ jobs:
       #
       # GitHub recibió un Push o Pull Request.
       #
-      # Luego leyó este archivo YAML y creó un
+      # Luego interpretó este archivo YAML y creó un
       # GitHub-hosted Runner con Ubuntu.
       #
-      # Un Runner es una máquina virtual temporal que ejecutará
-      # todos los Steps definidos en este workflow.
+      # El Runner es una máquina virtual temporal.
       #
-      # IMPORTANTE:
+      # Estado inicial:
       #
-      # ✔ El Runner está completamente limpio.
-      # ✔ No existe nuestro repositorio.
-      # ✔ No existe Terraform.
-      # ✔ No existe ninguna herramienta instalada por nosotros.
+      # ✔ Ubuntu limpio
+      # ❌ No existe nuestro repositorio
+      # ❌ Terraform no está instalado
       #
-      # Todo lo prepararemos paso a paso.
+      # A partir de ahora GitHub comenzará a ejecutar
+      # los Steps definidos más abajo.
       #
       # ==========================================================
 
@@ -58,9 +57,8 @@ jobs:
           echo "✔ Ubuntu"
           echo "❌ Repositorio"
           echo "❌ Terraform"
-          echo "❌ Herramientas del proyecto"
           echo ""
-          echo "Ahora comenzaremos a preparar el Runner..."
+          echo "Comencemos a preparar el Runner..."
           echo "================================================="
 
       # ==========================================================
@@ -80,24 +78,24 @@ jobs:
       # Versión:
       # v4
       #
-      # El Runner descarga esta Action desde GitHub y la ejecuta.
+      # IMPORTANTE
       #
-      # ¿Qué responsabilidad tiene?
+      # El Runner descarga este repositorio (la Action)
+      # y ejecuta el programa que existe dentro.
       #
-      # Descargar ESTE repositorio desde GitHub y copiarlo
-      # al workspace del Runner.
+      # Ese programa tiene una única responsabilidad:
       #
-      # Sin este Step...
+      # Copiar ESTE repositorio (anzy-infrastructure)
+      # desde GitHub al workspace del Runner.
       #
-      # El Runner seguiría completamente vacío.
+      # Sin este Step:
       #
-      # Los siguientes comandos:
+      # ✔ No existiría README.md
+      # ✔ No existiría terraform/
+      # ✔ No existiría docs/
       #
-      #   ls
-      #   terraform fmt
-      #   terraform validate
-      #
-      # fallarían porque el repositorio no existiría.
+      # Todos los comandos posteriores fallarían porque
+      # el Runner seguiría vacío.
       #
       # ==========================================================
 
@@ -109,14 +107,21 @@ jobs:
           echo "================================================="
           echo "📥 STEP 1 - CHECKOUT"
           echo ""
-          echo "GitHub le indicó al Runner:"
+          echo "GitHub le dijo al Runner:"
           echo ""
           echo "    Ejecuta actions/checkout@v4"
           echo ""
-          echo "El Runner descargó el repositorio."
+          echo "El Runner descargó la Action"
+          echo "actions/checkout desde GitHub."
+          echo ""
+          echo "Luego ejecutó el programa que"
+          echo "vive dentro de esa Action."
+          echo ""
+          echo "Ese programa descargó ESTE"
+          echo "repositorio al Runner."
           echo ""
           echo "Ahora todos los siguientes Steps"
-          echo "pueden acceder al código."
+          echo "pueden trabajar con el código."
           echo "================================================="
 
       # ==========================================================
@@ -136,25 +141,22 @@ jobs:
       # Versión:
       # v3
       #
-      # El Runner descarga esta Action y la ejecuta.
+      # El Runner descarga esa Action y ejecuta
+      # el programa que contiene.
       #
-      # ¿Qué responsabilidad tiene?
+      # Responsabilidad:
       #
       # Instalar Terraform dentro del Runner.
       #
-      # IMPORTANTE:
+      # IMPORTANTE
       #
       # Esta Action NO ejecuta Terraform.
       #
-      # Solamente lo instala.
+      # Solamente deja disponible el comando:
       #
-      # Sin este Step...
+      # terraform
       #
-      # terraform version
-      #
-      # respondería:
-      #
-      # terraform: command not found
+      # para los siguientes Steps.
       #
       # ==========================================================
 
@@ -168,23 +170,18 @@ jobs:
           echo "================================================="
           echo "📦 STEP 2 - SETUP TERRAFORM"
           echo ""
-          echo "GitHub le indicó al Runner:"
+          echo "GitHub le dijo al Runner:"
           echo ""
           echo "    Ejecuta hashicorp/setup-terraform@v3"
           echo ""
           echo "Terraform quedó instalado."
           echo ""
-          echo "Todavía NO hemos ejecutado Terraform."
-          echo "Solamente quedó disponible."
+          echo "Todavía NO ejecutamos Terraform."
+          echo "Solo quedó disponible."
           echo "================================================="
 
       # ==========================================================
       # 📍 STEP 3 - Working Directory
-      # ==========================================================
-      #
-      # Todos los comandos definidos con 'run:'
-      # se ejecutan desde el workspace del Runner.
-      #
       # ==========================================================
 
       - name: 📍 Show current directory
@@ -195,9 +192,10 @@ jobs:
           echo "================================================="
           echo "📍 STEP 3 - WORKING DIRECTORY"
           echo ""
-          echo "Este es el directorio desde donde"
-          echo "el Runner ejecutará todos los"
-          echo "comandos 'run:'."
+          echo "Todos los comandos 'run:' se ejecutan"
+          echo "desde este directorio."
+          echo ""
+          echo "Aquí fue copiado el repositorio."
           echo "================================================="
 
       # ==========================================================
@@ -219,7 +217,7 @@ jobs:
           echo "docs/"
           echo ".github/"
           echo ""
-          echo "Ya podemos trabajar con el proyecto."
+          echo "Ahora Terraform podrá trabajar con estos archivos."
           echo "================================================="
 
       # ==========================================================
@@ -236,35 +234,12 @@ jobs:
           echo ""
           echo "Terraform respondió correctamente."
           echo ""
-          echo "Eso significa que quedó instalado"
-          echo "dentro del Runner."
-          echo ""
-          echo "El Runner ya está preparado para"
-          echo "ejecutar:"
-          echo ""
-          echo "terraform fmt"
-          echo "terraform validate"
-          echo "terraform plan"
-          echo "terraform apply"
+          echo "El Runner ya quedó preparado para"
+          echo "ejecutar comandos Terraform."
           echo "================================================="
 
       # ==========================================================
       # 🏁 STEP 6 - End of Workflow
-      # ==========================================================
-      #
-      # Después de este Step...
-      #
-      # GitHub destruirá automáticamente el Runner.
-      #
-      # Todo desaparecerá:
-      #
-      # ✔ Terraform
-      # ✔ Repositorio descargado
-      # ✔ Archivos temporales
-      #
-      # La próxima ejecución comenzará nuevamente
-      # desde una máquina Ubuntu completamente limpia.
-      #
       # ==========================================================
 
       - name: 🏁 End of workflow
@@ -274,14 +249,16 @@ jobs:
           echo ""
           echo "Resumen:"
           echo ""
-          echo "1️⃣ GitHub creó un Runner Ubuntu."
-          echo "2️⃣ El Runner descargó el repositorio."
-          echo "3️⃣ El Runner instaló Terraform."
-          echo "4️⃣ Verificamos que Terraform funciona."
+          echo "1. GitHub interpretó el YAML."
+          echo "2. Creó un Runner Ubuntu."
+          echo "3. El Runner ejecutó actions/checkout."
+          echo "4. El Runner descargó el repositorio."
+          echo "5. El Runner ejecutó setup-terraform."
+          echo "6. Terraform quedó instalado."
           echo ""
           echo "💥 Después de este Step GitHub destruirá"
           echo "automáticamente el Runner."
           echo ""
-          echo "La próxima ejecución comenzará nuevamente"
-          echo "desde cero."
+          echo "La próxima ejecución comenzará"
+          echo "desde un Runner completamente limpio."
           echo "================================================="
