@@ -22,57 +22,135 @@ jobs:
 
       # ==========================================================
       # 👋 STEP 0 - Runner Created
+      # ==========================================================
       #
-      # GitHub acaba de crear un Runner Ubuntu completamente limpio.
-      # No existe tu repositorio.
-      # No existe Terraform.
-      # No existe ningún archivo del proyecto.
+      # ¿Qué acaba de ocurrir?
+      #
+      # GitHub recibió un Push o Pull Request y creó un
+      # GitHub-hosted Runner.
+      #
+      # Un Runner es una máquina virtual temporal que ejecutará
+      # este pipeline.
+      #
+      # IMPORTANTE:
+      #
+      # ✔ Está completamente limpia.
+      # ✔ No tiene nuestro repositorio.
+      # ✔ No tiene Terraform.
+      # ✔ No tiene herramientas instaladas por nosotros.
+      #
+      # Todo lo prepararemos paso a paso.
+      #
       # ==========================================================
 
       - name: 👋 Welcome to the Runner
         run: |
           echo "==========================================="
-          echo "🚀 GitHub Actions Training Mode"
+          echo "🚀 GITHUB ACTIONS TRAINING MODE"
           echo ""
           echo "GitHub acaba de crear un Runner Ubuntu."
-          echo "Este Runner está completamente limpio."
           echo ""
-          echo "Ahora comenzaremos a prepararlo."
+          echo "Estado actual:"
+          echo "✔ Ubuntu limpio"
+          echo "❌ No existe el repositorio"
+          echo "❌ Terraform aún no está instalado"
+          echo ""
+          echo "Comencemos a preparar el Runner..."
           echo "==========================================="
 
       # ==========================================================
       # 📥 STEP 1 - Checkout Repository
+      # ==========================================================
       #
-      # Usa el programa llamado 'checkout', mantenido por GitHub
-      # (actions), versión 4.
+      # ¿Qué es?
       #
-      # Responsabilidad:
-      # Descargar el repositorio y dejarlo disponible
-      # dentro del Runner.
+      # Una GitHub Action oficial publicada por GitHub.
+      #
+      # Owner:
+      # actions
+      #
+      # Repositorio:
+      # checkout
+      #
+      # Versión:
+      # v4
+      #
+      # ¿Qué hace?
+      #
+      # Descarga el contenido del repositorio desde GitHub
+      # y lo copia al workspace del Runner.
+      #
+      # Es muy parecido a ejecutar:
+      #
+      # git clone ...
+      #
+      # pero esta Action además:
+      #
+      # ✔ usa el GITHUB_TOKEN temporal
+      # ✔ obtiene el commit correcto
+      # ✔ prepara el workspace
+      #
+      # ¿Qué ocurriría si eliminamos este Step?
+      #
+      # El Runner seguiría vacío.
+      #
+      # Los siguientes comandos:
+      #
+      # terraform fmt
+      # terraform validate
+      # ls
+      #
+      # fallarían porque el repositorio no existiría.
+      #
       # ==========================================================
 
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
 
-      - name: 💬 Explain Checkout
+      - name: 💬 What just happened?
         run: |
           echo "==========================================="
           echo "📥 STEP 1 - CHECKOUT"
           echo ""
-          echo "✔ El repositorio fue descargado."
-          echo "✔ El Runner ahora tiene acceso al código."
-          echo "✔ Los siguientes Steps podrán utilizar"
-          echo "  README.md, terraform/, docs/, etc."
+          echo "✔ El repositorio fue descargado desde GitHub."
+          echo "✔ Ahora existe una copia local dentro del Runner."
+          echo "✔ Los siguientes Steps ya pueden trabajar"
+          echo "  con README.md, terraform/, docs/, etc."
           echo "==========================================="
 
       # ==========================================================
       # 📦 STEP 2 - Setup Terraform
+      # ==========================================================
       #
-      # Usa el programa oficial mantenido por HashiCorp.
+      # ¿Qué es?
       #
-      # Responsabilidad:
-      # Instalar exactamente la versión definida
-      # del binario Terraform.
+      # Una GitHub Action oficial mantenida por HashiCorp.
+      #
+      # Owner:
+      # hashicorp
+      #
+      # Repositorio:
+      # setup-terraform
+      #
+      # Versión:
+      # v3
+      #
+      # ¿Qué hace?
+      #
+      # Instala Terraform dentro del Runner.
+      #
+      # ¿Por qué usamos una Action y no un script?
+      #
+      # ✔ Código mantenido por HashiCorp.
+      # ✔ Más simple.
+      # ✔ Más seguro.
+      # ✔ Reproducible.
+      #
+      # ¿Por qué fijamos la versión?
+      #
+      # Queremos que todos los pipelines utilicen exactamente
+      # la misma versión de Terraform.
+      #
       # ==========================================================
 
       - name: 📦 Setup Terraform
@@ -80,81 +158,90 @@ jobs:
         with:
           terraform_version: "1.12.2"
 
-      - name: 💬 Explain Setup Terraform
+      - name: 💬 What just happened?
         run: |
           echo "==========================================="
           echo "📦 STEP 2 - SETUP TERRAFORM"
           echo ""
           echo "✔ Terraform fue instalado."
-          echo "✔ Todos los desarrolladores utilizarán"
-          echo "  exactamente la misma versión."
-          echo "✔ Esto garantiza reproducibilidad."
+          echo "✔ El Runner ya puede ejecutar comandos Terraform."
+          echo "✔ La versión instalada es exactamente la definida"
+          echo "  por el equipo."
           echo "==========================================="
 
       # ==========================================================
       # 📍 STEP 3 - Working Directory
-      #
-      # Todos los comandos 'run:' se ejecutan desde
-      # este directorio.
       # ==========================================================
 
       - name: 📍 Show current directory
         run: pwd
 
-      - name: 💬 Explain Working Directory
+      - name: 💬 What just happened?
         run: |
           echo "==========================================="
           echo "📍 STEP 3 - WORKING DIRECTORY"
           echo ""
-          echo "✔ Este es el directorio actual."
-          echo "✔ Todos los comandos 'run:' se ejecutarán"
-          echo "  desde esta ubicación."
+          echo "✔ Todos los comandos 'run:' se ejecutan"
+          echo "  desde este directorio."
+          echo "✔ Aquí quedó descargado el repositorio."
           echo "==========================================="
 
       # ==========================================================
       # 📂 STEP 4 - Repository Contents
-      #
-      # Comprobamos que el repositorio realmente
-      # existe dentro del Runner.
       # ==========================================================
 
       - name: 📂 List repository files
         run: ls -la
 
-      - name: 💬 Explain Repository
+      - name: 💬 What just happened?
         run: |
           echo "==========================================="
           echo "📂 STEP 4 - REPOSITORY CONTENTS"
           echo ""
-          echo "✔ El repositorio ya existe."
-          echo "✔ Terraform podrá leer los archivos."
-          echo "✔ Ya podemos trabajar con el proyecto."
+          echo "✔ El repositorio ya existe dentro del Runner."
+          echo "✔ Terraform ya podrá acceder al código."
           echo "==========================================="
 
       # ==========================================================
       # 🔎 STEP 5 - Verify Terraform
-      #
-      # Comprobamos que Terraform quedó correctamente instalado.
       # ==========================================================
 
       - name: 🔎 Verify Terraform installation
         run: terraform version
 
-      - name: 💬 Explain Terraform Verification
+      - name: 💬 What just happened?
         run: |
           echo "==========================================="
           echo "🔎 STEP 5 - VERIFY TERRAFORM"
           echo ""
           echo "✔ Terraform respondió correctamente."
-          echo "✔ El Runner ya está preparado para"
-          echo "  ejecutar fmt, validate, plan y apply."
+          echo "✔ El Runner quedó preparado para ejecutar:"
+          echo ""
+          echo "  terraform fmt"
+          echo "  terraform validate"
+          echo "  terraform plan"
+          echo "  terraform apply"
           echo "==========================================="
 
       # ==========================================================
       # 🏁 STEP 6 - End of Workflow
+      # ==========================================================
       #
-      # Después de este Step GitHub destruirá
-      # automáticamente el Runner.
+      # IMPORTANTE
+      #
+      # Después de este Step...
+      #
+      # GitHub destruirá automáticamente el Runner.
+      #
+      # Todo desaparecerá:
+      #
+      # ✔ Terraform
+      # ✔ Repositorio descargado
+      # ✔ Archivos temporales
+      #
+      # La próxima ejecución comenzará nuevamente desde
+      # una máquina Ubuntu completamente limpia.
+      #
       # ==========================================================
 
       - name: 🏁 End of workflow
@@ -168,12 +255,12 @@ jobs:
           echo "✔ Qué significa que sea efímero."
           echo "✔ Qué hace actions/checkout."
           echo "✔ Qué hace setup-terraform."
+          echo "✔ Qué diferencia existe entre uses y run."
           echo "✔ Qué es el Working Directory."
-          echo "✔ Qué diferencia hay entre uses y run."
           echo ""
-          echo "👋 Después de este Step GitHub destruirá"
-          echo "automáticamente este Runner."
+          echo "💥 Después de este Step GitHub destruirá"
+          echo "automáticamente el Runner."
           echo ""
           echo "La próxima ejecución comenzará nuevamente"
-          echo "desde una máquina Ubuntu completamente limpia."
+          echo "desde cero."
           echo "==========================================="
