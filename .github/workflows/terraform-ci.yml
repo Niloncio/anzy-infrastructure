@@ -15,23 +15,122 @@ permissions:
 
 jobs:
   terraform:
-    name: Terraform Validation
+    name: 🚀 Terraform Validation
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+
+      # ==========================================================
+      # STEP 1 - Checkout Repository
+      #
+      # GitHub crea un Runner completamente limpio.
+      #
+      # Esta Action oficial de GitHub descarga el contenido del
+      # repositorio y lo deja disponible en el workspace del Runner.
+      #
+      # Sin este Step no existirían:
+      #   README.md
+      #   terraform/
+      #   docs/
+      # ==========================================================
+
+      - name: 📥 Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Terraform
+      - name: 💬 What just happened?
+        run: |
+          echo "==========================================="
+          echo "📥 STEP 1 - CHECKOUT"
+          echo ""
+          echo "✔ GitHub creó un Runner Ubuntu completamente limpio."
+          echo "✔ Esta Action descargó el repositorio."
+          echo "✔ Ahora el Runner puede acceder a todos los archivos."
+          echo "==========================================="
+
+      # ==========================================================
+      # STEP 2 - Setup Terraform
+      #
+      # El Runner no trae Terraform instalado.
+      #
+      # Esta Action oficial de HashiCorp instala la versión exacta
+      # definida por el equipo para asegurar reproducibilidad.
+      # ==========================================================
+
+      - name: 📦 Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.12.2"
 
-      - name: Show current directory
+      - name: 💬 What just happened?
+        run: |
+          echo "==========================================="
+          echo "📦 STEP 2 - SETUP TERRAFORM"
+          echo ""
+          echo "✔ Terraform fue instalado."
+          echo "✔ La versión instalada es exactamente la"
+          echo "  definida por el pipeline."
+          echo "✔ Todos los desarrolladores ejecutarán"
+          echo "  la misma versión."
+          echo "==========================================="
+
+      # ==========================================================
+      # STEP 3 - Working Directory
+      #
+      # Todos los comandos 'run:' se ejecutan desde el workspace
+      # del Runner.
+      #
+      # Este Step nos permite descubrir desde qué carpeta se
+      # ejecutan los comandos.
+      # ==========================================================
+
+      - name: 📍 Show current directory
         run: pwd
 
-      - name: List repository files
+      - name: 💬 Explain working directory
+        run: |
+          echo "==========================================="
+          echo "📍 STEP 3 - WORKING DIRECTORY"
+          echo ""
+          echo "✔ Este es el directorio donde GitHub"
+          echo "  ejecuta todos los comandos 'run:'."
+          echo "✔ Aquí quedó descargado el repositorio."
+          echo "==========================================="
+
+      # ==========================================================
+      # STEP 4 - Repository Contents
+      #
+      # Verificamos que el repositorio realmente exista dentro
+      # del Runner.
+      # ==========================================================
+
+      - name: 📂 List repository files
         run: ls -la
 
-      - name: Verify Terraform installation
+      - name: 💬 Explain repository contents
+        run: |
+          echo "==========================================="
+          echo "📂 STEP 4 - REPOSITORY CONTENTS"
+          echo ""
+          echo "✔ El repositorio ya existe dentro del Runner."
+          echo "✔ Los siguientes Steps podrán trabajar"
+          echo "  con terraform/, docs/, README.md, etc."
+          echo "==========================================="
+
+      # ==========================================================
+      # STEP 5 - Verify Terraform
+      #
+      # Comprobamos que Terraform realmente quedó instalado.
+      # ==========================================================
+
+      - name: 🔎 Verify Terraform installation
         run: terraform version
+
+      - name: 💬 Explain Terraform verification
+        run: |
+          echo "==========================================="
+          echo "🔎 STEP 5 - VERIFY TERRAFORM"
+          echo ""
+          echo "✔ Terraform respondió correctamente."
+          echo "✔ El Runner quedó listo para ejecutar"
+          echo "  fmt, validate, plan y apply."
+          echo "==========================================="
