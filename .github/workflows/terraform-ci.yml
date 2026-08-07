@@ -262,3 +262,38 @@ jobs:
           echo "La próxima ejecución comenzará"
           echo "desde un Runner completamente limpio."
           echo "================================================="
+
+                # ==========================================================
+      # 🧹 STEP 6 - Terraform Format
+      # ==========================================================
+      #
+      # ¿Qué es?
+      #
+      # terraform fmt
+      #
+      # ¿Qué hace?
+      #
+      # Recorre todos los archivos .tf y aplica el formato
+      # oficial definido por HashiCorp.
+      #
+      # No modifica infraestructura.
+      # No habla con Google Cloud.
+      #
+      # ==========================================================
+
+      - name: 🧹 Terraform Format Check
+        run: terraform fmt -check -recursive terraform/
+
+      - name: 💬 What just happened?
+        run: |
+          echo "================================================="
+          echo "🧹 STEP 6 - TERRAFORM FMT"
+          echo ""
+          echo "Terraform revisó el formato de todos"
+          echo "los archivos .tf."
+          echo ""
+          echo "Todavía NO habló con Google Cloud."
+          echo "Todavía NO creó infraestructura."
+          echo ""
+          echo "Solo verificó el formato."
+          echo "================================================="
